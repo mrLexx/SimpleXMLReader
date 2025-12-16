@@ -1,11 +1,18 @@
 <?php
 
+namespace mrLexx;
+
+use DOMCharacterData;
+use DOMDocument;
+use Exception;
+use SimpleXMLElement;
+use XMLReader;
+
 /**
  * Simple XML Reader
  *
  * @license Public Domain
- * @author Dmitry Pyatkov(aka dkrnl) <dkrnl@yandex.ru>
- * @url http://github.com/dkrnl/SimpleXMLReader
+ * @url https://github.com/mrLexx/SimpleXMLReader
  */
 class SimpleXMLReader extends XMLReader
 {
@@ -56,10 +63,10 @@ class SimpleXMLReader extends XMLReader
      * @var array
      */
     protected $nodesCounter = array();
-    
+
     /**
      * Do not remove redundant white space.
-     * 
+     *
      * @var bool
      */
     public $preserveWhiteSpace = true;
@@ -68,9 +75,9 @@ class SimpleXMLReader extends XMLReader
     /**
      * Add node callback
      *
-     * @param  string   $xpath
-     * @param  callback $callback
-     * @param  integer  $nodeType
+     * @param string $xpath
+     * @param callback $callback
+     * @param integer $nodeType
      * @return SimpleXMLReader
      */
     public function registerCallback($xpath, $callback, $nodeType = XMLREADER::ELEMENT)
@@ -89,8 +96,8 @@ class SimpleXMLReader extends XMLReader
     /**
      * Remove node callback
      *
-     * @param  string  $xpath
-     * @param  integer $nodeType
+     * @param string $xpath
+     * @param integer $nodeType
      * @return SimpleXMLReader
      */
     public function unRegisterCallback($xpath, $nodeType = XMLREADER::ELEMENT)
@@ -110,7 +117,7 @@ class SimpleXMLReader extends XMLReader
      */
     public function read()
     {
-        $read = parent::read();       
+        $read = parent::read();
         if ($this->depth < $this->prevDepth) {
             if (!isset($this->nodesParsed[$this->depth])) {
                 throw new Exception("Invalid xml: missing items in SimpleXMLReader::\$nodesParsed");
@@ -132,8 +139,8 @@ class SimpleXMLReader extends XMLReader
             $this->nodesType[$this->depth] = $this->nodeType;
             $this->nodesCounter[$this->depth] = 1;
         }
-        $this->prevDepth = $this->depth;       
-        return $read;
+        $this->prevDepth = $this->depth;
+        return is_bool($read) ? $read : false;
     }
 
     /**
@@ -142,9 +149,11 @@ class SimpleXMLReader extends XMLReader
      * @param boolean $nodesCounter
      * @return string
      */
-     public function currentXpath($nodesCounter = false)
-     {
-        if (count($this->nodesCounter) != count($this->nodesParsed) && count($this->nodesCounter) != count($this->nodesType)) {
+    public function currentXpath($nodesCounter = false)
+    {
+        if (count($this->nodesCounter) != count($this->nodesParsed) && count($this->nodesCounter) != count(
+                $this->nodesType
+            )) {
             throw new Exception("Empty reader");
         }
         $result = "";
@@ -209,24 +218,24 @@ class SimpleXMLReader extends XMLReader
     /**
      * Run XPath query on current node
      *
-     * @param  string $path
-     * @param  string $version
-     * @param  string $encoding
-     * @param  string $className
+     * @param string $path
+     * @param string $version
+     * @param string $encoding
+     * @param string $className
      * @return array(SimpleXMLElement)
      */
     public function expandXpath($path, $version = "1.0", $encoding = "UTF-8", $className = null)
-    {     
+    {
         return $this->expandSimpleXml($version, $encoding, $className)->xpath($path);
     }
 
     /**
      * Expand current node to string
      *
-     * @param  string $version
-     * @param  string $encoding
-     * @param  string $className
-     * @return SimpleXMLElement
+     * @param string $version
+     * @param string $encoding
+     * @param string $className
+     * @return bool|SimpleXMLElement|string
      */
     public function expandString($version = "1.0", $encoding = "UTF-8", $className = null)
     {
@@ -236,9 +245,9 @@ class SimpleXMLReader extends XMLReader
     /**
      * Expand current node to SimpleXMLElement
      *
-     * @param  string $version
-     * @param  string $encoding
-     * @param  string $className
+     * @param string $version
+     * @param string $encoding
+     * @param string $className
      * @return SimpleXMLElement
      */
     public function expandSimpleXml($version = "1.0", $encoding = "UTF-8", $className = null)
@@ -261,8 +270,8 @@ class SimpleXMLReader extends XMLReader
     /**
      * Expand current node to DomDocument
      *
-     * @param  string $version
-     * @param  string $encoding
+     * @param string $version
+     * @param string $encoding
      * @return DomDocument
      */
     public function expandDomDocument($version = "1.0", $encoding = "UTF-8")

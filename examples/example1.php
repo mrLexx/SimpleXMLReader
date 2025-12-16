@@ -1,7 +1,10 @@
 <?php
 
+
+use mrLexx\SimpleXMLReader;
+
 header ("Content-type: text/html, charset=utf-8;");
-require_once dirname(__FILE__). "/../library/SimpleXMLReader.php";
+//require_once dirname(__FILE__). "/../library/SimpleXMLReader.php";
 
 class ExampleXmlReader1 extends SimpleXMLReader
 {
